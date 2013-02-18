@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
 							String sRet = EntityUtils.toString(r.getEntity(), HTTP.UTF_8);
 							char cc = sRet.charAt(0);
 							if (cc == '<'){
-								new AlertDialog.Builder(MainActivity.this).setTitle("错误提示")
+								new AlertDialog.Builder(MainActivity.this).setTitle("恭喜您")
 								.setMessage("登录成功").show();
 							}else if (cc=='e'){
 								new AlertDialog.Builder(MainActivity.this).setTitle("错误提示")
@@ -237,8 +237,8 @@ public class MainActivity extends Activity {
 					HttpResponse r = c.execute(hp);
 					int code = r.getStatusLine().getStatusCode();
 					if (code == 500){
-						Toast.makeText(MainActivity.this, "可能断开连接成功，服务器端返回500了",
-								Toast.LENGTH_LONG);
+						new AlertDialog.Builder(MainActivity.this).setTitle("退出登录成功")
+						.setMessage("当然也可能是服务器出问题了,因为都返回500的状态码").show();
 					}
 				}catch(Exception e){
 					e.printStackTrace();
