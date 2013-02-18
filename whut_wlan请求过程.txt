@@ -1,0 +1,70 @@
+登录
+1 请求
+GET / HTTP/1.1
+Host: 12.130.132.30
+响应
+HTTP/1.1 302 Temporarily Moved
+Date: Sun, 17 Feb 2013 23:53:42 GMT
+Server:
+Location: http://172.30.16.58/index_client_3.html?cmd=login&switchip=172.30.12.244&mac=00:1e:64:7d:2a:6a&ip=10.136.254.33&essid=WHUT-WLAN&url=http://12.130.132.30/
+
+已经登录返回403
+
+2 请求
+POST /cgi-bin/srun_portal HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+User-Agent: my session
+Host: 172.30.16.53
+Content-Length: 138
+Cache-Control: no-cache
+
+action=login&
+username=196551&
+password=860702&
+drop=0&
+type=2&
+n=23&
+ip=0&
+mbytes=0&
+minutes=0&
+ac_id=3&
+mac=00:1e:64:7d:2a:6a&
+nas_ip=172.30.12.244
+响应
+HTTP/1.1 200 OK
+Date: Sun, 17 Feb 2013 23:48:54 GMT
+Server: Apache/2.0.63 (Unix) PHP/5.2.6
+Cache-Control: no-cache, no-store, must-revalidate
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=utf-8
+
+55
+<script language="javascript">location="/srun_portal.html?action=login_ok";</script>
+
+
+账户不存在返回500
+密码错误返回200
+e
+password_error
+0
+
+
+退出
+1 请求
+POST /cgi-bin/srun_portal HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+User-Agent: my session
+Host: 172.30.16.53
+Content-Length: 87
+Cache-Control: no-cache
+action=logout&ac_id=3&username=196551&mac=00:1e:64:7d:2a:6a&type=2&nas_ip=172.30.12.244
+响应
+500
+HTTP/1.1 500 Internal Server Error
+Date: Mon, 18 Feb 2013 04:10:10 GMT
+Server: Apache/2.0.63 (Unix) PHP/5.2.6
+Content-Length: 632
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+<!DOCTYPE HTML PUBLI

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">校园无线网认证</string>
+    <string name="app_desc">本程序是武汉理工大学无线校园网认证的android版，由TeamV团队开发。</string>
+    <string name="sTips">请输入您的用户名和密码</string>
+    <string name="sUsername">账户</string>
+    <string name="sUsernameHint">学生卡卡号，如196551</string>
+    <string name="sPassword">密码</string>
+    <string name="sDisplay">显示密码</string>
+    <string name="sSave">保存</string>
+    <string name="sAuto">自动登录</string>
+    <string name="sConnect">连接</string>
+    <string name="sDisconnect">断开</string>
+
+</resources>
