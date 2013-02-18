@@ -1,5 +1,6 @@
 package edu.whut.teamv.whutwlan;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -15,6 +18,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import android.os.Build.VERSION;
@@ -40,6 +44,7 @@ public class MainActivity extends Activity {
 	private String password = "";
 	private String ip = "";
 	private String mac="";
+	private RedirectHandler rh = null;
 	public static final String SwitchUrl = "http://12.130.132.30/";
 	public static final String ActionUrl = "http://172.30.16.53/cgi-bin/srun_portal";
 
@@ -60,7 +65,19 @@ public class MainActivity extends Activity {
 					.detectLeakedSqlLiteObjects().detectLeakedClosableObjects()
 					.penaltyLog().penaltyDeath().build());
 		}
-		//
+		//防止程序302跳转
+		rh = new RedirectHandler() {//不准跳转
+			@Override
+			public boolean isRedirectRequested(HttpResponse response,
+					HttpContext context) {
+				return false;
+			}
+			@Override
+			public URI getLocationURI(HttpResponse response, HttpContext context)
+					throws ProtocolException {
+				return null;
+			}
+		};
 		CheckBox mDisplay = (CheckBox) this.findViewById(R.id.chkDisplay);
 		mPassword = (EditText) this.findViewById(R.id.txtPassword);
 		mUsername = (EditText) this.findViewById(R.id.txtUsername);
@@ -101,13 +118,15 @@ public class MainActivity extends Activity {
 				HttpGet g = new HttpGet(SwitchUrl);
 				try {
 					HttpClient c = new DefaultHttpClient();
+					((DefaultHttpClient)c).setRedirectHandler(rh);
 					HttpResponse r = c.execute(g);
-					switch (r.getStatusLine().getStatusCode()) {
+					int code =r.getStatusLine().getStatusCode(); 
+					switch (code) {
 					case 302:// 正常，获得分配的ip
 						Header h = r.getFirstHeader("Location");
 						String s = h.getValue();
 						//目前手动设置这个值
-						s = "Location: http://172.30.16.58/index_client_3.html?cmd=login&switchip=172.30.12.244&mac=00:1e:64:7d:2a:6a&ip=10.136.254.33&essid=WHUT-WLAN&url=http://12.130.132.30/";
+//						s = "Location: http://172.30.16.58/index_client_3.html?cmd=login&switchip=172.30.12.244&mac=00:1e:64:7d:2a:6a&ip=10.136.254.33&essid=WHUT-WLAN&url=http://12.130.132.30/";
 						String[] ss = s.split("&|=");
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("action","login"));
@@ -143,7 +162,7 @@ public class MainActivity extends Activity {
 						case 200://有两种情况
 							String sRet = EntityUtils.toString(r.getEntity(), HTTP.UTF_8);
 							char cc = sRet.charAt(0);
-							if (cc == '5'){
+							if (cc == '<'){
 								new AlertDialog.Builder(MainActivity.this).setTitle("错误提示")
 								.setMessage("登录成功").show();
 							}else if (cc=='e'){
@@ -214,6 +233,7 @@ public class MainActivity extends Activity {
 					HttpEntity he = new UrlEncodedFormEntity(params);
 					hp.setEntity(he);
 					HttpClient c = new DefaultHttpClient();
+					((DefaultHttpClient)c).setRedirectHandler(rh);
 					HttpResponse r = c.execute(hp);
 					int code = r.getStatusLine().getStatusCode();
 					if (code == 500){
